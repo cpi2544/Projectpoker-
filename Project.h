@@ -40,7 +40,7 @@ public:
     int turn;
     long long int boardMoney;
     long long int betMoney;
-    bool haveBet;
+    bool haveBetOrAllin;
     void showBoard();
     void showMoneyBoard();
     void showMoneyBet();
@@ -48,11 +48,10 @@ public:
     void showPlayerCard(Player *);
     void recieveOd(Player *);
     void doOrder(Player *);
-    void check(Player *);
     void bet(Player *);
     void call(Player *);
     void raise(Player *);
-    void fold(Player *);
+    void allIn(Player *);
     void round1();
 };
 #endif
