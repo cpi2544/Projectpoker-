@@ -5,10 +5,12 @@
 using namespace std;
 struct Deck
 {
-public:
-    Deck();
+private:
     string ranks[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
     char suits[4] = {'\3', '\4', '\5', '\6'};
+
+public:
+    Deck();
     vector<string> allCardLeft;
     int cardLeft;
     void shuffle();
@@ -20,31 +22,36 @@ public:
     Player();
     string name;
     string status;
+    // string hand;
     vector<string> card;
     int order;
+    // int rankOfHand;
     long long int money;
-    void drawCard(Deck &, int);
 };
 class PokerGame
 {
-public:
-    PokerGame();
-    PokerGame(Player *&, Deck &, int, long long int);
-    ~PokerGame();
-    Player *player; // ประกาศไว้เพื่อสร้าง Object n ตัวใดๆของ ClassPlayer แบบ Dynamic Allocation
-    Deck deck;
+private:
     vector<string> board;
     int boardSize;
     int num_player;
     int round;
     int turn;
-    int cntCheck;
+    int cntCheck; // ถ้า == จำนวนผู้เล่น แปลว่าทุกคนเช็คหมดไปรอบถัดไปได้
     long long int boardMoney;
     long long int betMoney;
     bool haveBetOrAllIn;
+
+public:
+    PokerGame();
+    PokerGame(Deck &, int, long long int);
+    ~PokerGame();
+    Player *player;
+    Deck deck;
     void showBoard();
     void showMoneyBoard();
     void showMoneyBet();
+    void communityCards(int);
+    void holeCard(Player *, int);
     void showPlayerMoney(Player *);
     void showPlayerCard(Player *);
     void recieveOd(Player *);
@@ -55,6 +62,7 @@ public:
     void raise(Player *);
     void allIn(Player *);
     void fold(Player *);
+    // string checkHand(const vector<string> &, const vector<string> &);//ใช้ & เพราะลดการใช้เวลาใน Copy Vector
     void round1();
 };
 #endif
