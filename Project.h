@@ -38,9 +38,10 @@ public:
     int num_player;
     int round;
     int turn;
+    int cntCheck;
     long long int boardMoney;
     long long int betMoney;
-    bool haveBetOrAllin;
+    bool haveBetOrAllIn;
     void showBoard();
     void showMoneyBoard();
     void showMoneyBet();
@@ -48,10 +49,12 @@ public:
     void showPlayerCard(Player *);
     void recieveOd(Player *);
     void doOrder(Player *);
+    void check(Player *);
     void bet(Player *);
     void call(Player *);
     void raise(Player *);
     void allIn(Player *);
+    void fold(Player *);
     void round1();
 };
 #endif
