@@ -81,22 +81,21 @@ void PokerGame::showPlayerMoney(Player *p) // Showว่าเงินคนป
 void PokerGame::showPlayerCard(Player *p) // Showว่าไพ่คนปัจจุบัน(ใน Parameter ) มีอะไรบ้าง
 {
     cout << p->name << "'s Cards: ";
-    if (turn == 0)
+
+    for (size_t i = 0; i < p->card.size(); i++)
     {
-        for (size_t i = 0; i < p->card.size(); i++)
-        {
+        if (p->card[i][0] == 'T')
+            cout << "10" << p->card[i].back();
+        else
             cout << p->card[i] << " ";
-        }
     }
-    else
-        cout << "*-----------Hinding-----------*";
     cout << "\n";
 }
 void PokerGame::holeCard(Player *p, int N)
 {
     for (size_t i = 0; i < N; i++)
     {
-        p->card.push_back(deck.allCardLeft.back());
+        p->card.emplace_back(deck.allCardLeft.back());
         deck.allCardLeft.pop_back();
         deck.cardLeft = deck.allCardLeft.size(); // change number of card left in deck
     }
@@ -106,7 +105,7 @@ void PokerGame::communityCards(int n)
 
     for (size_t i = 0; i < n; i++)
     {
-        board.push_back(deck.allCardLeft.back());
+        board.emplace_back(deck.allCardLeft.back());
         deck.allCardLeft.pop_back();
     }
     deck.cardLeft = deck.allCardLeft.size(); // change number of card left in deck
@@ -205,12 +204,6 @@ void PokerGame::doOrder(Player *p) // หลังจากทำได้เร
 }
 // string PokerGame::checkHand(const vector<string> &h, const vector<string> &b)
 // { // Check กรณีดังต่อไปนี้ 2 5 6 7 ใบ
-//     vector<std::pair<int, char>> hand;
-//     for (size_t i = 0; i < h.size(); i++)
-//     {
-//         size_t pos = h[i].find_first_not_of("0123456789");
-//         hand[i].first = stoi(h[i].substr(0, pos));
-//     }
 // }
 void PokerGame::check(Player *p)
 {
@@ -283,7 +276,7 @@ Deck::Deck()
     {
         for (size_t j = 0; j < 4; j++)
         {
-            allCardLeft.push_back(ranks[i] + suits[j]);
+            allCardLeft.emplace_back(string(1, ranks[i]) + string(1, suits[j]));
         }
     }
 }

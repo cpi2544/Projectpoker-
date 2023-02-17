@@ -6,7 +6,7 @@ using namespace std;
 struct Deck
 {
 private:
-    string ranks[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    char ranks[13] = {'2','3','4','5','6','7','8','9','T','J','Q','K','A'};
     char suits[4] = {'\3', '\4', '\5', '\6'};
 
 public:
@@ -24,6 +24,7 @@ private:
 public:
     Player();
     vector<string> card;
+    vector<string> combinedWithBoard;
     string name;
     string status;
     int order;
