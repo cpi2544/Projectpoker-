@@ -18,14 +18,15 @@ public:
 };
 struct Player
 {
+private:
+    string hand;
+    int rankOfHand;
 public:
     Player();
+    vector<string> card;
     string name;
     string status;
-    // string hand;
-    vector<string> card;
     int order;
-    // int rankOfHand;
     long long int money;
 };
 class PokerGame
@@ -36,7 +37,6 @@ private:
     int num_player;
     int round;
     int turn;
-    int cntCheck; // ถ้า == จำนวนผู้เล่น แปลว่าทุกคนเช็คหมดไปรอบถัดไปได้
     long long int boardMoney;
     long long int betMoney;
     bool haveBetOrAllIn;
@@ -50,10 +50,12 @@ public:
     void showBoard();
     void showMoneyBoard();
     void showMoneyBet();
-    void communityCards(int);
-    void holeCard(Player *, int);
     void showPlayerMoney(Player *);
     void showPlayerCard(Player *);
+    void holeCard(Player *, int);
+    void communityCards(int);
+    string checkHand(const vector<string> &, const vector<string> &);//ใช้ & เพราะลดการใช้เวลาใน Copy Vector
+    int  logicForBot(Player *);//return ออกมาเป็น order หลังจากพิจารณา Card
     void recieveOd(Player *);
     void doOrder(Player *);
     void check(Player *);
@@ -62,7 +64,6 @@ public:
     void raise(Player *);
     void allIn(Player *);
     void fold(Player *);
-    // string checkHand(const vector<string> &, const vector<string> &);//ใช้ & เพราะลดการใช้เวลาใน Copy Vector
     void round1();
 };
 #endif

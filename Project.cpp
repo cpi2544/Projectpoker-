@@ -28,7 +28,7 @@ void recieveSimpleInformation(int &num, long long int &money)
         if (num < 2 || num > 4)
             cout << "Invalid number of player\n";
     } while (num < 2 || num > 4); // ถามว่ามากี่คน
-   
+
     do
     {
         cout << "How much money do you want to play(1,000 - 1,000,000): ";
@@ -60,7 +60,7 @@ PokerGame::~PokerGame()
 void PokerGame::showBoard() // Show ว่า Board มีไพ่ไหนบ้างตอนนี้
 {
     cout << "Current Board: ";
-    for (int i = 0; i < boardSize; i++)
+    for (size_t i = 0; i < board.size(); i++)
     {
         cout << board[i] << " ";
     }
@@ -74,10 +74,37 @@ void PokerGame::showMoneyBet() // Show ว่าเงิน Bet สูงสุ
 {
     cout << "Current Bet Money: " << betMoney << "\n";
 }
+void PokerGame::showPlayerMoney(Player *p) // Showว่าเงินคนปัจจุบัน(ใน Parameter ) เหลือเท่าไหร่
+{
+    cout << p->name << "'s Current Money: " << p->money << "\n";
+}
+void PokerGame::showPlayerCard(Player *p) // Showว่าไพ่คนปัจจุบัน(ใน Parameter ) มีอะไรบ้าง
+{
+    cout << p->name << "'s Cards: ";
+    if (turn == 0)
+    {
+        for (size_t i = 0; i < p->card.size(); i++)
+        {
+            cout << p->card[i] << " ";
+        }
+    }
+    else
+        cout << "*-----------Hinding-----------*";
+    cout << "\n";
+}
+void PokerGame::holeCard(Player *p, int N)
+{
+    for (size_t i = 0; i < N; i++)
+    {
+        p->card.push_back(deck.allCardLeft.back());
+        deck.allCardLeft.pop_back();
+        deck.cardLeft = deck.allCardLeft.size(); // change number of card left in deck
+    }
+}
 void PokerGame::communityCards(int n)
 {
 
-    for (int i = 0; i < n; i++)
+    for (size_t i = 0; i < n; i++)
     {
         board.push_back(deck.allCardLeft.back());
         deck.allCardLeft.pop_back();
@@ -85,23 +112,10 @@ void PokerGame::communityCards(int n)
     deck.cardLeft = deck.allCardLeft.size(); // change number of card left in deck
     boardSize = board.size();
 }
-void PokerGame::showPlayerCard(Player *p) // Showว่าไพ่คนปัจจุบัน(ใน Parameter ) มีอะไรบ้าง
-{
-    cout << p->name << "'s Cards: ";
-    for (int i = 0; i < p->card.size(); i++)
-    {
-        cout << p->card[i] << " ";
-    }
-    cout << "\n";
-}
-void PokerGame::showPlayerMoney(Player *p) // Showว่าเงินคนปัจจุบัน(ใน Parameter ) เหลือเท่าไหร่
-{
-    cout << p->name << "'s Current Money: " << p->money << "\n";
-}
 void PokerGame::round1() // เริ่มรอบแรกของเกม
 {
     deck.shuffle(); // สับไพ่ในสำรับก่อน
-    for (int i = 0; i < num_player; i++)
+    for (size_t i = 0; i < num_player; i++)
     {
         holeCard(player + i, 2);
     }                  // ทุกคนยังไม่มีไพ่บนมือดังนั้นเราจะเริ่มด้วยการแจกไพ่คนละ2ใบก่อน
@@ -126,11 +140,9 @@ void PokerGame::round1() // เริ่มรอบแรกของเกม
         }
         cout << "3.All-In\n4.Fold\n";
         recieveOd(currentPlayer);
-        communityCards(3);
         turn++;
-        if (cntCheck == num_player)
+        if (turn == num_player)
         {
-            cntCheck = 0;
             turn = 0;
             haveBetOrAllIn = false;
             round++;
@@ -191,9 +203,17 @@ void PokerGame::doOrder(Player *p) // หลังจากทำได้เร
         }
     }
 }
+// string PokerGame::checkHand(const vector<string> &h, const vector<string> &b)
+// { // Check กรณีดังต่อไปนี้ 2 5 6 7 ใบ
+//     vector<std::pair<int, char>> hand;
+//     for (size_t i = 0; i < h.size(); i++)
+//     {
+//         size_t pos = h[i].find_first_not_of("0123456789");
+//         hand[i].first = stoi(h[i].substr(0, pos));
+//     }
+// }
 void PokerGame::check(Player *p)
 {
-    cntCheck++;
     p->status = "check";
 }
 void PokerGame::bet(Player *p)
@@ -214,7 +234,7 @@ void PokerGame::bet(Player *p)
                 recieveOd(p);
                 return;
             }
-            else 
+            else
                 cout << "Invalid Input Try Again\n";
         }
     } while (betMoney > p->money);
@@ -249,28 +269,19 @@ void PokerGame::allIn(Player *p)
 }
 void PokerGame::fold(Player *p)
 {
-    cntCheck++;
     p->status = "fold";
-}
-void PokerGame::holeCard(Player *p, int N)
-{
-    for (int i = 0; i < N; i++)
-    {
-        p->card.push_back(deck.allCardLeft.back());
-        deck.allCardLeft.pop_back();
-        deck.cardLeft = deck.allCardLeft.size(); // change number of card left in deck
-    }
 }
 Player::Player()
 {
     cout << "Enter Your name\n";
     getline(cin, name);
+    order = 1;
 }
 Deck::Deck()
 {
-    for (int i = 0; i < 13; i++)
+    for (size_t i = 0; i < 13; i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (size_t j = 0; j < 4; j++)
         {
             allCardLeft.push_back(ranks[i] + suits[j]);
         }
@@ -282,7 +293,7 @@ void Deck::shuffle()
 }
 void Deck::showCardLeft()
 {
-    for (int i = 0; i < cardLeft; i++)
+    for (size_t i = 0; i < cardLeft; i++)
     {
         cout << allCardLeft[i] << " ";
     }
