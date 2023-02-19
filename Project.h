@@ -8,11 +8,9 @@ struct Deck
 private:
     char ranks[13] = {'2','3','4','5','6','7','8','9','T','J','Q','K','A'};
     char suits[4] = {'\3', '\4', '\5', '\6'};
-
 public:
     Deck();
     vector<string> allCardLeft;
-    int cardLeft;
     void shuffle();
     void showCardLeft();
 };
@@ -24,7 +22,6 @@ private:
 public:
     Player();
     vector<string> card;
-    vector<string> combinedWithBoard;
     string name;
     string status;
     int order;
@@ -34,7 +31,6 @@ class PokerGame
 {
 private:
     vector<string> board;
-    int boardSize;
     int num_player;
     int round;
     int turn;
@@ -56,7 +52,6 @@ public:
     void holeCard(Player *, int);
     void communityCards(int);
     string checkHand(const vector<string> &, const vector<string> &);//ใช้ & เพราะลดการใช้เวลาใน Copy Vector
-    int  logicForBot(Player *);//return ออกมาเป็น order หลังจากพิจารณา Card
     void recieveOd(Player *);
     void doOrder(Player *);
     void check(Player *);

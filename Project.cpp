@@ -85,7 +85,7 @@ void PokerGame::showPlayerCard(Player *p) // Showว่าไพ่คนปั�
     for (size_t i = 0; i < p->card.size(); i++)
     {
         if (p->card[i][0] == 'T')
-            cout << "10" << p->card[i].back();
+            cout << "10" << p->card[i].back() << " ";
         else
             cout << p->card[i] << " ";
     }
@@ -97,7 +97,6 @@ void PokerGame::holeCard(Player *p, int N)
     {
         p->card.emplace_back(deck.allCardLeft.back());
         deck.allCardLeft.pop_back();
-        deck.cardLeft = deck.allCardLeft.size(); // change number of card left in deck
     }
 }
 void PokerGame::communityCards(int n)
@@ -108,8 +107,6 @@ void PokerGame::communityCards(int n)
         board.emplace_back(deck.allCardLeft.back());
         deck.allCardLeft.pop_back();
     }
-    deck.cardLeft = deck.allCardLeft.size(); // change number of card left in deck
-    boardSize = board.size();
 }
 void PokerGame::round1() // เริ่มรอบแรกของเกม
 {
@@ -286,7 +283,7 @@ void Deck::shuffle()
 }
 void Deck::showCardLeft()
 {
-    for (size_t i = 0; i < cardLeft; i++)
+    for (size_t i = 0; i < allCardLeft.size(); i++)
     {
         cout << allCardLeft[i] << " ";
     }
