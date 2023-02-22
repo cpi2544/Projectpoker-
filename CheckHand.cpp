@@ -177,7 +177,7 @@ bool hasFullHouse(vector<std::pair<int, char>> hand, int &maxVar, int &max2ndPai
 
 void hasHighCard(vector<std::pair<int, char>> hand, int &maxVar)
 {
-    maxVar = hand[0].first;
+    maxVar = hand.back().first;
 }
 void checkHand(const vector<string> &h, const vector<string> &b)
 { // Check กรณีดังต่อไปนี้ 2 5 6 7 ใบ
@@ -230,8 +230,8 @@ int main()
 {
 
     // Create a vector of poker cards
-    vector<string> hand = {"7\5", "J\5", "7\4", "T\3"};
-    vector<string> board = {"K\3", "7\3", "7\3"};
+    vector<string> hand = {"7\5", "7\5"};
+    vector<string> board = {"7\5", "7\5","8\6"};
     // Sort the hand by rank
     checkHand(hand, board);
     return 0;

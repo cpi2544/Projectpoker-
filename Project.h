@@ -6,8 +6,9 @@ using namespace std;
 struct Deck
 {
 private:
-    char ranks[13] = {'2','3','4','5','6','7','8','9','T','J','Q','K','A'};
+    char ranks[13] = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
     char suits[4] = {'\3', '\4', '\5', '\6'};
+
 public:
     Deck();
     vector<string> allCardLeft;
@@ -19,13 +20,16 @@ struct Player
 private:
     string hand;
     int rankOfHand;
+
 public:
-    Player();
-    vector<string> card;
+    Player(string, long long int);
     string name;
+    long long int moneyGame;
+    long long int moneyInWeb;
+    vector<string> card;
     string status;
+    string role;
     int order;
-    long long int money;
 };
 class PokerGame
 {
@@ -33,25 +37,29 @@ private:
     vector<string> board;
     int num_player;
     int round;
-    int turn;
+    int current;
+    int dealer;
+    int mandatory_bet;
     long long int boardMoney;
     long long int betMoney;
+    bool restart;
     bool haveBetOrAllIn;
 
 public:
     PokerGame();
-    PokerGame(Deck &, int, long long int);
+    PokerGame(Deck &, int, long long int, int);
     ~PokerGame();
-    Player *player;
+    vector<Player *> players;
     Deck deck;
     void showBoard();
     void showMoneyBoard();
     void showMoneyBet();
     void showPlayerMoney(Player *);
     void showPlayerCard(Player *);
-    void holeCard(Player *, int);
+    void holeCard();
     void communityCards(int);
-    string checkHand(const vector<string> &, const vector<string> &);//ใช้ & เพราะลดการใช้เวลาใน Copy Vector
+    string checkHand(const vector<string> &, const vector<string> &); // ใช้ & เพราะลดการใช้เวลาใน Copy Vector
+    void showChoice();
     void recieveOd(Player *);
     void doOrder(Player *);
     void check(Player *);
@@ -60,6 +68,8 @@ public:
     void raise(Player *);
     void allIn(Player *);
     void fold(Player *);
+    void assignRole();
     void round1();
+    void showLostMoneyForMandatoryBet();
 };
 #endif
