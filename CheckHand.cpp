@@ -78,21 +78,7 @@ void convertToPairVector(vector<std::pair<int, char>> &split, vector<string> &co
 
 bool hasRoyalFlush(vector<std::pair<int, char>> hand)
 {
-    int cntAQKJT = 0;
-    char suit = '\0';
-    for (size_t i = 0; i < hand.size(); i++)
-    {
-        if ((hand[i].first == 14 || hand[i].first == 13 || hand[i].first == 12 || hand[i].first == 11 || hand[i].first == 10))
-        {
-            if (cntAQKJT == 0)
-                suit = hand[i].second;
-            if (hand[i].second == suit)
-                cntAQKJT++;
-        }
-    }
-    if (cntAQKJT == 5)
-        return true;
-    return false;
+ 
 }
 bool hasStraight(vector<std::pair<int, char>> hand, int &maxVar, char &flushSuit, bool &StraightFlush)
 {
