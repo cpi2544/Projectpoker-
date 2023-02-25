@@ -212,6 +212,9 @@ void checkHand(const vector<string> &h, const vector<string> &b)
     cout << "\nMaxVar = " << maxVar;
     cout << "\nMax2nd = " << max2ndPairVar;
 }
+
+
+
 int main()
 {
 

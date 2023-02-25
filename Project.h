@@ -59,7 +59,14 @@ public:
     ~PokerGame();
     vector<Player *> players;
     Deck deck;
-    void showBoard();
+    void topboard();
+    void midboard0();
+    void midboard3();
+    void midboard4();
+    void midboard5();
+    void botomtboard();
+    void actionboard();
+    void showBoard1();
     void showMoneyPot();
     void showMoneyBet();
     void showPlayerMoney(Player *);
@@ -97,14 +104,14 @@ string convertToLower(string s)
 }
 void drawPic()
 {
-    cout << "\n===============================================================================================";
-    cout << "\n   CCCCC      A        SSSSSSSSS   IIIIIIIII  NN     NN    OOOOOOOO     ";
-    cout << "\n CC          A  A      SS             III     NN N   NN   OO      OO    ";
-    cout << "\nCC          A    A     SSSSSSSSS      III     NN  N  NN   OO      OO    ";
-    cout << "\n CC        AAAAAAAA           SS      III     NN   N NN   OO      OO    ";
-    cout << "\n   CCCCC  A        A   SSSSSSSSS   IIIIIIIII  NN     NN    OOOOOOOO     ";
-    cout << "\n===============================================================================================";
-    cout << "\n======================== Welcome to Poker Game=================================================\n";
+    cout << "\n=========================================================================================================================";
+    cout << "\n                               CCCCC      A        SSSSSSSSS   IIIIIIIII  NN     NN    OOOOOOOO     ";
+    cout << "\n                             CC          A  A      SS             III     NN N   NN   OO      OO    ";
+    cout << "\n                            CC          A    A     SSSSSSSSS      III     NN  N  NN   OO      OO    ";
+    cout << "\n                             CC        AAAAAAAA           SS      III     NN   N NN   OO      OO    ";
+    cout << "\n                               CCCCC  A        A   SSSSSSSSS   IIIIIIIII  NN     NN    OOOOOOOO     ";
+    cout << "\n=========================================================================================================================";
+    cout << "\n================================================= Welcome to Poker Game =================================================\n";
 }
 void recieveSimpleInformation(int &num, long long int &money, int &mandatory_betRef)
 {
@@ -154,15 +161,112 @@ PokerGame::~PokerGame()
         delete players[i];
     }
 }
-void PokerGame::showBoard() // Show ว่า Board มีไพ่ไหนบ้างตอนนี้
-{
-    cout << "Current Board: ";
-    for (size_t i = 0; i < cardsOnBoard.size(); i++)
-    {
-        cout << cardsOnBoard[i] << " ";
-    }
+
+void PokerGame::topboard(){
+
+    cout << "Current Board: \n"; 
+    cout << setw(30) << "                                                          Dealer                                       \n\n";
+    cout << setw(30) << "                               ============================================================\n";
+    cout << setw(30) << "                             //                                                            \\\\" << "\n";
+    cout << setw(30) << "                            //                                                              \\\\" << "\n";
+    cout << setw(30) << "                           //                                                                \\\\" << "\n";
+    cout << setw(30) << "                          //                                                                  \\\\" << "\n";
+    cout << setw(30) << "                         //                                                                    \\\\" << "\n";
+    cout << setw(30) << "                        //                                                                      \\\\" << "\n";
+    cout << setw(30) << "                       //                                                                        \\\\" << "\n";
+    cout << setw(30) << "                      //                                                                          \\\\" << "\n";
+    cout << setw(30) << "                     //                                                                            \\\\" << "\n\n";
+}
+void PokerGame::midboard0(){
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||        _ _ _ _ _    _ _ _ _ _    _ _ _ _ _    _ _ _ _ _    _ _ _ _ _         ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |_ _ _ _ _|  |_ _ _ _ _|  |_ _ _ _ _|  |_ _ _ _ _|  |_ _ _ _ _|        ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n\n";
+}
+
+void PokerGame::midboard3(){
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||        _________    _________    _________    _ _ _ _ _    _ _ _ _ _         ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |    "<<cardsOnBoard[0][0]<<"    |  |    "<<cardsOnBoard[1][0]<<"    |  |    "<<cardsOnBoard[2][0]<<"    |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |    "<<cardsOnBoard[0][1]<<"    |  |    "<<cardsOnBoard[1][1]<<"    |  |    "<<cardsOnBoard[2][1]<<"    |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |_________|  |_________|  |_________|  |_ _ _ _ _|  |_ _ _ _ _|        ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n\n";
+}
+
+void PokerGame::midboard4(){
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||        _________    _________    _________    _________    _ _ _ _ _         ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |    "<<cardsOnBoard[0][0]<<"    |  |    "<<cardsOnBoard[1][0]<<"    |  |    "<<cardsOnBoard[2][0]<<"    |  |    "<<cardsOnBoard[3][0]<<"    |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |    "<<cardsOnBoard[0][1]<<"    |  |    "<<cardsOnBoard[1][1]<<"    |  |    "<<cardsOnBoard[2][1]<<"    |  |    "<<cardsOnBoard[3][1]<<"    |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |_________|  |_________|  |_________|  |_________|  |_ _ _ _ _|        ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n\n";
+}
+
+void PokerGame::midboard5(){
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||        _________    _________    _________    _________    _________         ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |    "<<cardsOnBoard[0][0]<<"    |  |    "<<cardsOnBoard[1][0]<<"    |  |    "<<cardsOnBoard[2][0]<<"    |  |    "<<cardsOnBoard[3][0]<<"    |  |    "<<cardsOnBoard[4][0]<<"    |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |    "<<cardsOnBoard[0][1]<<"    |  |    "<<cardsOnBoard[1][1]<<"    |  |    "<<cardsOnBoard[2][1]<<"    |  |    "<<cardsOnBoard[3][1]<<"    |  |    "<<cardsOnBoard[4][1]<<"    |        ||\n";
+    cout << setw(30) << "                    ||       |         |  |         |  |         |  |         |  |         |        ||\n";
+    cout << setw(30) << "                    ||       |_________|  |_________|  |_________|  |_________|  |_________|        ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n";
+    cout << setw(30) << "                    ||                                                                              ||\n\n";
+}
+
+
+
+
+void PokerGame::botomtboard(){
+    cout << setw(30) << "                     \\\\                                                                            //\n";
+    cout << setw(30) << "                      \\\\                                                                          //\n";
+    cout << setw(30) << "                       \\\\                                                                        //\n";
+    cout << setw(30) << "                        \\\\                                                                      //\n";
+    cout << setw(30) << "                         \\\\                                                                    //\n";
+    cout << setw(30) << "                          \\\\                                                                  //\n";
+    cout << setw(30) << "                           \\\\                                                                //\n";
+    cout << setw(30) << "                            \\\\                                                              //\n";
+    cout << setw(30) << "                             \\\\                                                            //\n";
+    cout << setw(30) << "                               ============================================================\n";
+    cout << setw(30) << "\n";
+    cout << setw(30) << "\n";
+}
+
+void PokerGame::actionboard(){
+    
+    cout << setw(30) << "           player1 : name               player2 : name               player3 : name            player4 : name\n";
+    cout << setw(30) << "           money : 1                    money : 2                    money : 3                 money : 4\n";
+    cout << setw(30) << "           action : 1                   action : 2                   action : 3                action : 4 \n";
     cout << "\n";
 }
+
+void PokerGame::showBoard1() // Show ว่า Board มีไพ่ไหนบ้างตอนนี้
+{
+    topboard();
+    midboard5();
+    botomtboard();
+    actionboard();
+}
+
 void PokerGame::showMoneyPot() // Show ว่าเงินใน Board มีเท่าไหร่แล้ว
 {
     cout << "Current Board Money: " << pot << "\n";
@@ -245,12 +349,13 @@ void PokerGame::preflop() // เริ่มรอบแรกของเกม
     deck.shuffle();                                                                                   // สับไพ่ในสำรับก่อน
     assignRole();                                                                                     // จัด Role ให้ผู้เล่นให้ครบ ว่าเป็น Dealer or small or big
     lostMoneyForMandatoryBet(players[(dealer + 1) % num_player], players[(dealer + 2) % num_player]); // ก่อนแจกไพ่ต้องมีการวางเดิมพันก่อนสำหรับ small and big
-    holeCard();                                                                                       // ทุกคนยังไม่มีไพ่บนมือดังนั้นเราจะเริ่มด้วยการแจกไพ่คนละ2ใบก่อน
+    holeCard();      
+    communityCards(5);                                                                                 // ทุกคนยังไม่มีไพ่บนมือดังนั้นเราจะเริ่มด้วยการแจกไพ่คนละ2ใบก่อน
     while (round == 1)                                                                                // เริ่มรอบแรกอย่างเป็นทางการ
     {
         if (players[current]->action == "fold")
             continue; // เจอคนหมอบก็ข้ามได้เลย
-        showBoard();
+        showBoard1();
         showMoneyPot();
         showMoneyBet();
         cout << players[current]->name << "'s Turn\n";
@@ -331,7 +436,7 @@ void PokerGame::turn()
     {
         if (players[current]->action == "fold")
             continue; // เจอคนหมอบก็ข้ามได้เลย
-        showBoard();
+        showBoard1();
         showMoneyPot();
         showMoneyBet();
         cout << players[current]->name << "'s Turn\n";
@@ -561,4 +666,8 @@ void Deck::showCardLeft()
     }
     cout << "\n";
 }
+
+
+
+
 #endif
