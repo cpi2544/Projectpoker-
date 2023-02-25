@@ -218,7 +218,6 @@ int main()
     // Create a vector of poker cards
     vector<string> hand = {"7\5", "7\5"};
     vector<string> board = {"7\5", "7\5","8\6"};
-    // Sort the hand by rank
     checkHand(hand, board);
     return 0;
 }

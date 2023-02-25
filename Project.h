@@ -1,6 +1,7 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 #include <iostream>
+#include <cstring>
 #include <iomanip>
 #include <fstream>
 #include <cstdlib>
@@ -8,6 +9,7 @@
 #include <algorithm>
 #include <vector>
 #include <unordered_map>
+#include <map>
 using namespace std;
 struct Deck
 {
@@ -27,11 +29,12 @@ struct Player
 public:
     Player(string, long long int);
     string name;
-    long long int moneyGame;
+    int moneyGame;
+    int moneytoBet;
     long long int moneyInWeb;
     vector<string> card;
     string hand;
-    string status;
+    string action;
     string role;
     int rankOfHand;
     int order;
@@ -43,12 +46,13 @@ private:
     int num_player;
     int current;
     int dealer;
+    int indexRaiseOrBet;
     int round;
     int mandatory_bet;
     long long int pot;
     long long int betMoney;
     bool restart;
-    bool haveBetOrAllIn;
+    bool hasBetOrAllIn;
 
 public:
     PokerGame(Deck &, int, long long int, int);
@@ -65,7 +69,8 @@ public:
     void communityCards(int);
     string checkHand(const vector<string> &, const vector<string> &); // ใช้ & เพราะลดการใช้เวลาใน Copy Vector
     void showChoice();
-    void recieveOd(Player *);
+    void recieveOrder(Player *);
+    void checkOrder(Player *);
     void doOrder(Player *);
     void check(Player *);
     void bet(Player *);
@@ -74,13 +79,22 @@ public:
     void allIn(Player *);
     void fold(Player *);
     void assignRole();
-    void showLostMoneyForMandatoryBet(Player *, Player *);
+    void resetAction();
+    void lostMoneyForMandatoryBet(Player *, Player *);
     bool findWinner();
     void updateRound();
     void preflop();
     void flop();
     void turn();
 };
+string convertToLower(string s)
+{
+    for (int i = 0; i < s.length(); i++)
+    {
+        s[i] = tolower(s[i]);
+    }
+    return s;
+}
 void drawPic()
 {
     cout << "\n===============================================================================================";
@@ -131,7 +145,7 @@ PokerGame::PokerGame(Deck &dRef, int numRef, long long int moneyRef, int mandato
     betMoney = 0;                     // กำหนด ว่าตอนนี้ค่าเงิน Betสูงสุดเท่าไหร่ คน Call Raise จะได้รู้
     round = 1;                        // กำหนดรอบของเกม
     restart = false;                  // กำหนดให้เป็นNew game ไม่ได้ Restart อยู่
-    haveBetOrAllIn = false;           // กำหนดว่ามีการ Bet || All inไปรึยัง ถ้ามีไปแล้วจะ Check ไม่ได้แล้ว แต่ Call Raise หรือ Fold ได้
+    hasBetOrAllIn = false;            // กำหนดว่ามีการ Bet || All inไปรึยัง ถ้ามีไปแล้วจะ Check ไม่ได้แล้ว แต่ Call Raise หรือ Fold ได้
 }
 PokerGame::~PokerGame()
 {
@@ -194,21 +208,29 @@ void PokerGame::communityCards(int n)
         deck.allCardLeft.pop_back();
     }
 }
+void PokerGame::resetAction()
+{
+
+    for (size_t i = 0; i < num_player; i++)
+    {
+        if (restart)
+            players[i]->role = "";
+        else if (players[i]->action != "flop")
+            players[i]->role = "";
+    }
+}
 void PokerGame::assignRole()
 {
     if (restart)
     {
         dealer = (dealer + 1) % num_player;
-        for (size_t i = 0; i < num_player; i++)
-        {
-            players[i]->role = "";
-        }
-    } // formatRole
+        resetAction();
+    }
     players[dealer]->role = "dealer";
     players[(dealer + 1) % num_player]->role = "small-blind";
     players[(dealer + 2) % num_player]->role = "big-blind";
 }
-void PokerGame::showLostMoneyForMandatoryBet(Player *s, Player *b)
+void PokerGame::lostMoneyForMandatoryBet(Player *s, Player *b)
 {
 
     cout << s->name << " is Small-Blind you lost money from Mandatory-bet :" << mandatory_bet / 2 << "\n";
@@ -219,14 +241,14 @@ void PokerGame::showLostMoneyForMandatoryBet(Player *s, Player *b)
 }
 void PokerGame::preflop() // เริ่มรอบแรกของเกม
 {
-    current = (dealer + 3) % num_player;                                                                  // คนซ้าย Big blind index ได้เริ่มก่อน;
-    deck.shuffle();                                                                                       // สับไพ่ในสำรับก่อน
-    assignRole();                                                                                         // จัด Role ให้ผู้เล่นให้ครบ ว่าเป็น Dealer or small or big
-    showLostMoneyForMandatoryBet(players[(dealer + 1) % num_player], players[(dealer + 2) % num_player]); // ก่อนแจกไพ่ต้องมีการวางเดิมพันก่อนสำหรับ small and big
-    holeCard();                                                                                           // ทุกคนยังไม่มีไพ่บนมือดังนั้นเราจะเริ่มด้วยการแจกไพ่คนละ2ใบก่อน
-    while (round == 1)                                                                                    // เริ่มรอบแรกอย่างเป็นทางการ
+    current = (dealer + 3) % num_player;                                                              // คนซ้าย Big blind index ได้เริ่มก่อน;
+    deck.shuffle();                                                                                   // สับไพ่ในสำรับก่อน
+    assignRole();                                                                                     // จัด Role ให้ผู้เล่นให้ครบ ว่าเป็น Dealer or small or big
+    lostMoneyForMandatoryBet(players[(dealer + 1) % num_player], players[(dealer + 2) % num_player]); // ก่อนแจกไพ่ต้องมีการวางเดิมพันก่อนสำหรับ small and big
+    holeCard();                                                                                       // ทุกคนยังไม่มีไพ่บนมือดังนั้นเราจะเริ่มด้วยการแจกไพ่คนละ2ใบก่อน
+    while (round == 1)                                                                                // เริ่มรอบแรกอย่างเป็นทางการ
     {
-        if (players[current]->status == "fold")
+        if (players[current]->action == "fold")
             continue; // เจอคนหมอบก็ข้ามได้เลย
         showBoard();
         showMoneyPot();
@@ -239,8 +261,7 @@ void PokerGame::preflop() // เริ่มรอบแรกของเกม
         showPlayerMoney(players[current]);
         cout << "Enter Your Action\n";
         showChoice();
-        // recieveOd(players[current]);
-        current = (current + 1) % num_player;
+        recieveOrder(players[current]);
         if (findWinner())
             break;
         else
@@ -258,14 +279,14 @@ bool PokerGame::findWinner()
     int cntFlop = 0;
     for (auto &p : players)
     {
-        if (p->status == "flop")
+        if (p->action == "flop")
             cntFlop++;
     }
     if ((round == 1 || round == 2 || round == 3) && cntFlop == num_player - 1)
     { // ในรอบ preflop flop turn
         for (auto &p : players)
         {
-            if (p->status != "flop")
+            if (p->action != "flop")
             {
                 cout << p->name << " Win this game!!!\n";
                 cout << p->moneyGame << "+" << pot << "\n";
@@ -278,7 +299,7 @@ bool PokerGame::findWinner()
     {
         for (auto &p : players)
         {
-            if (p->status != "flop")
+            if (p->action != "flop")
             {
                 cout << p->name << "'s Card :";
                 for (int i = 0; i < 2; i++)
@@ -292,8 +313,14 @@ bool PokerGame::findWinner()
 }
 void PokerGame::updateRound()
 {
-
-    haveBetOrAllIn = false;
+    for (auto &p : players)
+    {
+        if (p->action == "")
+        {
+            current = (current + 1) % num_player;
+            return;
+        }
+    }
     round++;
 }
 void PokerGame::turn()
@@ -302,7 +329,7 @@ void PokerGame::turn()
     communityCards(3); // เปิดไพ่กองกลาง 3 ใบ
     while (round == 2) // เริ่มรอบสองอย่างเป็นทางการ
     {
-        if (players[current]->status == "fold")
+        if (players[current]->action == "fold")
             continue; // เจอคนหมอบก็ข้ามได้เลย
         showBoard();
         showMoneyPot();
@@ -312,18 +339,18 @@ void PokerGame::turn()
         showPlayerMoney(players[current]);
         cout << "Enter Your Action\n";
         showChoice();
-        recieveOd(players[current]);
+        recieveOrder(players[current]);
         current = (current + 1) % num_player;
         for (auto &p : players)
         {
-            if (p->status == "fold")
+            if (p->action == "fold")
                 cntfold++;
         }
         if (cntfold == num_player - 1)
         {
             for (auto &p : players)
             {
-                if (p->status != "fold")
+                if (p->action != "fold")
                     cout << "The Winner is " << p->name << "!!!!";
                 p->moneyGame += pot;
             }
@@ -332,38 +359,78 @@ void PokerGame::turn()
             cntfold = 0;
         if (current == (current + 1) % num_player) // ถ้าเป็นตาที่เกินจาก Dealer ไปแล้วเริ่มรอบใหม่
         {
-            haveBetOrAllIn = false;
+            hasBetOrAllIn = false;
             round++;
         }
     }
 }
 void PokerGame::showChoice()
 {
-    if (round == 1)
+    int num = 1;
+    if (!hasBetOrAllIn && round > 1)
     {
-        cout << "1.Call\n";
-        cout << "2.Raise\n";
-        cout << "3.Fold\n";
+
+        cout << num++ << ".Check\n"; //  1
+        cout << num++ << ".Bet\n";   // 2
     }
+    cout << num++ << ".Call\n";   // 3
+    cout << num++ << ".Raise\n";  // 4
+    cout << num++ << ".Cheat\n";  // 5
+    cout << num++ << ".All-In\n"; // 6
+    cout << num++ << ".Fold\n";   // 7
 }
-void PokerGame::recieveOd(Player *p) // รับคำสั่งมาก่อนว่าผู้เล่นต้องการทำอะไร ฟังชั่นนี้เราจะเช็คว่าเราจะทำคำสั่งนั้นได้หรือไม่ (ต้องผ่านเงื่อนไข ขั้นพื้นฐานก่อน)
+
+void PokerGame::recieveOrder(Player *p) // รับคำสั่งมาก่อนว่าผู้เล่นต้องการทำอะไร ฟังชั่นนี้เราจะเช็คว่าเราจะทำคำสั่งนั้นได้หรือไม่ (ต้องผ่านเงื่อนไข ขั้นพื้นฐานก่อน)
 {
+    string order = "";
+    bool passStage = true;
     do
     {
+        passStage = true;
         cout << "Input Your Choice: ";
-        cin >> p->order;
-        if (p->order < 1 || p->order > 4)
+        getline(cin, order);
+        p->order = stoi(order);
+        if (p->order < 1 && p->order > 7 && !hasBetOrAllIn && round > 1)
+        {
             cout << "Invalid Order Try Again\n";
-        else if (haveBetOrAllIn && p->order == 1 && (p->moneyGame - betMoney) < 0)
-            cout << "You don't have enough money to call";
-        else if (haveBetOrAllIn && p->order == 2 && (p->moneyGame - betMoney) <= 0)
-            cout << "You don't have enough money to raise";
-    } while (p->order < 1 || p->order > 4);
+            passStage = false;
+        }
+        else if (p->order < 1 && p->order > 5)
+        {
+            cout << "Invalid Order Try Again\n";
+            passStage = false;
+        }
+    } while (!passStage);
+    checkOrder(p);
     doOrder(p);
+}
+void PokerGame::checkOrder(Player *p)
+{
 }
 void PokerGame::doOrder(Player *p) // หลังจากทำได้เราจะเริ่มทำคำสั่งนั้นโดยแยกตาม ว่าคำสั่งที่ถูก Player คนนั้นสั่งนั้นเป็นอะไร
 {
-    if (!haveBetOrAllIn)
+    if (round == 1)
+    {
+        switch (p->order)
+        {
+        case 1:
+            call(p);
+            break;
+        case 2:
+            raise(p);
+            break;
+        case 3:
+            // cheat(p);
+            break;
+        case 4:
+            allIn(p);
+            break;
+        default:
+            p->action = "fold";
+            break;
+        }
+    }
+    if (round == 1)
     {
         switch (p->order)
         {
@@ -377,25 +444,7 @@ void PokerGame::doOrder(Player *p) // หลังจากทำได้เร
             allIn(p);
             break;
         default:
-            p->status = "fold";
-            break;
-        }
-    }
-    else
-    {
-        switch (p->order)
-        {
-        case 1:
-            p->status = "call";
-            break;
-        case 2:
-            raise(p);
-            break;
-        case 3:
-            allIn(p);
-            break;
-        default:
-            p->status = "fold";
+            p->action = "fold";
             break;
         }
     }
@@ -405,7 +454,7 @@ void PokerGame::doOrder(Player *p) // หลังจากทำได้เร
 // }
 void PokerGame::check(Player *p)
 {
-    p->status = "check";
+    p->action = "check";
 }
 void PokerGame::bet(Player *p)
 {
@@ -413,8 +462,8 @@ void PokerGame::bet(Player *p)
     {
         int od = 0;
         cout << "How much money do you want to bet?\n";
-        cin >> betMoney;
-        if (betMoney > p->moneyGame)
+        cin >> p->moneytoBet;
+        if (p->moneytoBet > p->moneyGame)
         {
             cout << "You don't have enough money\nPress 1:Try Again\nPress 2:Exit\n";
             cin >> od;
@@ -422,50 +471,72 @@ void PokerGame::bet(Player *p)
                 continue;
             else if (od == 2)
             {
-                recieveOd(p);
+                recieveOrder(p);
                 return;
             }
             else
                 cout << "Invalid Input Try Again\n";
         }
     } while (betMoney > p->moneyGame);
-    p->status = "bet";
-    pot += betMoney;
-    haveBetOrAllIn = true;
-    p->moneyGame -= betMoney;
+    resetAction();
+    p->action = "bet";
+    pot += p->moneytoBet;
+    p->moneyGame -= p->moneytoBet;
+    betMoney += p->moneytoBet;
+    hasBetOrAllIn = true;
 }
 void PokerGame::call(Player *p)
 {
-    pot += p->moneyGame;
-    betMoney += p->moneyGame;
-    p->status = "call";
+
+    pot += betMoney;
+
+    p->action = "call";
 }
 void PokerGame::raise(Player *p)
 {
     do
     {
-        cout << "How much money do you want to raise? ( > ) " << betMoney << "\n";
-        cin >> betMoney;
-        if (betMoney > p->moneyGame)
-            cout << "You don't have enough money please try again\n";
-    } while (betMoney > p->moneyGame);
-    p->status = "raise";
+        int od = 0;
+        cout << "How much money do you want to raise?\n";
+        cin >> p->moneytoBet;
+        if (p->moneytoBet > p->moneyGame)
+        {
+            cout << "You don't have enough money to raise\nPress 1:Try Again\nPress 2:Exit\n";
+            cin >> od;
+            if (od == 1)
+                continue;
+            else if (od == 2)
+            {
+                recieveOrder(p);
+                return;
+            }
+            else
+                cout << "Invalid Input Try Again\n";
+        }
+    } while (p->moneytoBet > p->moneyGame);
+    resetAction();
+    p->action = "raise";
+    pot += (betMoney + p->moneytoBet);
+    p->moneyGame -= (betMoney + p->moneytoBet);
+    betMoney += p->moneytoBet;
+    hasBetOrAllIn = true;
 }
 void PokerGame::allIn(Player *p)
 {
     pot += p->moneyGame;
     betMoney += p->moneyGame;
     p->moneyGame = 0;
-    p->status = "all_in";
+    p->action = "all_in";
 }
 void PokerGame::fold(Player *p)
 {
-    p->status = "fold";
+    p->action = "fold";
 }
 Player::Player(string name, long long int moneyInWeb) : name(name), moneyInWeb(moneyInWeb)
 {
-    status = "";
+    action = "";
     role = "";
+    moneytoBet = 0;
     order = 1;
 }
 Deck::Deck()
