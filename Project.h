@@ -67,6 +67,9 @@ public:
     void botomtboard();
     void actionboard();
     void showBoard1();
+    void showBoard2();
+    void showBoard3();
+    void showBoard4();
     void showMoneyPot();
     void showMoneyBet();
     void showPlayerMoney(Player *);
@@ -248,18 +251,44 @@ void PokerGame::botomtboard(){
     cout << setw(30) << "                             \\\\                                                            //\n";
     cout << setw(30) << "                               ============================================================\n";
     cout << setw(30) << "\n";
+    showMoneyPot();
+    showMoneyBet();
     cout << setw(30) << "\n";
 }
 
 void PokerGame::actionboard(){
     
-    cout << setw(30) << "           player1 : name               player2 : name               player3 : name            player4 : name\n";
-    cout << setw(30) << "           money : 1                    money : 2                    money : 3                 money : 4\n";
-    cout << setw(30) << "           action : 1                   action : 2                   action : 3                action : 4 \n";
+    cout << "player1 : " << players[0] << "               player2 : " << players[1] << "               player3 : " << players[2] << "            player4 : " << players[3] << "\n";
+    cout << "money : " << players[0]->moneyGame << "                           money : " << players[1]->moneyGame << "                           money : " << players[2]->moneyGame << "                       money : " << players[3]->moneyGame << "\n";
+    cout << "action : " << players[0]->action << "                             action : " << players[1]->action << "                             action : " << players[2]->action << "                          action : " << players[3]->action <<  "\n";
     cout << "\n";
 }
 
-void PokerGame::showBoard1() // Show ว่า Board มีไพ่ไหนบ้างตอนนี้
+void PokerGame::showBoard1() // Show ว่า Board preflop มีไพ่ไหนบ้างตอนนี้
+{
+    topboard();
+    midboard0();
+    botomtboard();
+    actionboard();
+}
+
+void PokerGame::showBoard2() // Show ว่า Board flop มีไพ่ไหนบ้างตอนนี้
+{
+    topboard();
+    midboard3();
+    botomtboard();
+    actionboard();
+}
+
+void PokerGame::showBoard3() // Show ว่า Board turn มีไพ่ไหนบ้างตอนนี้
+{
+    topboard();
+    midboard4();
+    botomtboard();
+    actionboard();
+}
+
+void PokerGame::showBoard4() // Show ว่า Board river มีไพ่ไหนบ้างตอนนี้
 {
     topboard();
     midboard5();
@@ -350,14 +379,12 @@ void PokerGame::preflop() // เริ่มรอบแรกของเกม
     assignRole();                                                                                     // จัด Role ให้ผู้เล่นให้ครบ ว่าเป็น Dealer or small or big
     lostMoneyForMandatoryBet(players[(dealer + 1) % num_player], players[(dealer + 2) % num_player]); // ก่อนแจกไพ่ต้องมีการวางเดิมพันก่อนสำหรับ small and big
     holeCard();      
-    communityCards(5);                                                                                 // ทุกคนยังไม่มีไพ่บนมือดังนั้นเราจะเริ่มด้วยการแจกไพ่คนละ2ใบก่อน
+    communityCards(0);                                                                                 // ทุกคนยังไม่มีไพ่บนมือดังนั้นเราจะเริ่มด้วยการแจกไพ่คนละ2ใบก่อน
     while (round == 1)                                                                                // เริ่มรอบแรกอย่างเป็นทางการ
     {
         if (players[current]->action == "fold")
             continue; // เจอคนหมอบก็ข้ามได้เลย
         showBoard1();
-        showMoneyPot();
-        showMoneyBet();
         cout << players[current]->name << "'s Turn\n";
         showPlayerCard(players[current]);
         // if (players[current]->hand == "")
@@ -436,7 +463,7 @@ void PokerGame::turn()
     {
         if (players[current]->action == "fold")
             continue; // เจอคนหมอบก็ข้ามได้เลย
-        showBoard1();
+        showBoard3();
         showMoneyPot();
         showMoneyBet();
         cout << players[current]->name << "'s Turn\n";
